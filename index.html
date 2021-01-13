@@ -1,0 +1,218 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <title>NETSuveillance WEB</title>
+
+    <!-- m.js -->
+    <script type="text/javascript" language="JavaScript">
+        var bCrossBrow = false;
+        var bnpCheck = false;
+        if (navigator.userAgent.indexOf('IE') < 0) {
+            var userAgent = navigator.userAgent,
+                rMsie = /(msie\s|trident.*rv:)([\w.]+)/,
+                rFirefox = /(firefox)\/([\w.]+)/,
+                rOpera = /(opera).+version\/([\w.]+)/,
+                rChrome = /(chrome)\/([\w.]+)/,
+                rSafari = /version\/([\w.]+).*(safari)/;
+            var browserMatch = uaMatch(userAgent.toLowerCase());
+            if (browserMatch.browser != "IE") {
+                bCrossBrow = true;
+            }
+
+        }
+
+        function uaMatch(ua) {
+            var match = rMsie.exec(ua);
+
+            if (match != null) {
+                return {browser: "IE", version: match[2] || "0"};
+            }
+            var match = rFirefox.exec(ua);
+            if (match != null) {
+                return {browser: match[1] || "", version: match[2] || "0"};
+            }
+            var match = rOpera.exec(ua);
+            if (match != null) {
+                return {browser: match[1] || "", version: match[2] || "0"};
+            }
+            var match = rChrome.exec(ua);
+            if (match != null) {
+                return {browser: match[1] || "", version: match[2] || "0"};
+            }
+            var match = rSafari.exec(ua);
+            if (match != null) {
+                return {browser: match[2] || "", version: match[1] || "0"};
+            }
+            if (match != null) {
+                return {browser: "", version: "0"};
+            }
+        }
+
+    </script>
+
+    <script type="text/javascript" src="ip_cam_activex.js"></script>
+    <script type="text/javascript" src="config_connect_ip_cam.js"></script>
+    <script type="text/javascript">
+        // config_connect_ip_cam.js - содержить информацию для подключения к IP камере
+        var ipaddress = document.location.hostname;  // если камера установлена в локальной сети и страница запускается в ней
+        var hostport = 34567;                        // Порт IP камеры
+        var serverIP = "xmeye.net";                  // сервер произвадителя IP камеры, через него транслируется видеопоток
+        var serverPort = 8000;                       // порт сервера производителя
+
+        var runViewCam = function(){
+             // var res = ocx.Login(ipaddress, hostport, username, password);
+             var res = ocx.Login(mac, hostport, username, password);
+             if (res > 0) {
+                //ocx.SetSpecialParam(2);
+                ocx.PlayAll();
+             }else{
+                alert("error: "+res);
+             }
+        }
+        var DetectActiveX = function() {
+            try {
+                var comActiveX = new ActiveXObject("WEB.WebCtrl.1");
+                comActiveX = null;
+            } catch (e) {
+                if (bCrossBrow) {
+                    return true;
+                };
+                return false;
+            }
+            return true;
+        }
+        window.addEvent('domready', function () {
+            ocx.SetSpecialParamEx2(2, "Russian", 0, 0);  // выбор языка
+            // ocx.SetSpecialParamEx2(2, "English", 0, 0); // выбор языка
+            if (!DetectActiveX()) {
+                return;
+            } else {
+                if (0 < ocx.SetSpecialParamEx2(1, serverIP, serverPort, "")) { }
+                runViewCam();
+            }
+        });
+
+        var Download = function() {
+            window.open("New_Active.exe");
+            // window.open("http://xmsecu.com:8080/ocx/New_Active.exe");
+        }
+
+    </script>
+
+
+
+</head>
+<body>
+
+<div id="pageerror" style="width: 200px; height: 20px; display: none; margin-left: auto;
+        margin-right: auto; margin-top: 350px;">
+    <span id="errormessage" style="color: Black; font-size: 16px;"></span>
+</div>
+<a href="https://xmeye.net/main">Сайт производителя камеры</a>
+<a href="https://ftp.mozilla.org/pub/firefox/releases/41.0/win32-EME-free/ru/Firefox%20Setup%2041.0.exe">FireFox 41.0</a>
+
+<br/><button id="dlbutton" onclick="Download();">Download New_Active.exe</button>
+
+<table style="text-align: center;">
+     <tr>
+        <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,4,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,4,parseInt($('ps').value))"
+             >LT</button>
+        </td>
+        <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,0,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,0,parseInt($('ps').value))"
+             >T</button>
+        </td>
+        <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,6,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,6,parseInt($('ps').value))"
+             >RT</button>
+        </td>
+     </tr>
+     <tr>
+          <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,2,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,2,parseInt($('ps').value))"
+              >L</button>
+          </td>
+          <td> <button  href="javascript:;"
+               onclick="ocx.OnBntEntermenu();"
+              >C</button>
+          </td>
+          <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,3,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,3,parseInt($('ps').value))"
+              >R</button>
+          </td>
+     </tr>
+     <tr>
+          <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,5,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,5,parseInt($('ps').value))"
+              >LB</button>
+          </td>
+          <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,1,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,1,parseInt($('ps').value))"
+              >CB</button>
+          </td>
+          <td> <button  href="javascript:;"
+              onmousedown="ocx.PTZCtrlStart(-1,7,parseInt($('ps').value))"
+              onmouseup="ocx.PTZCtrlStop(-1,7,parseInt($('ps').value))"
+              >RB</button>
+          </td>
+     </tr>
+</table>
+
+<button onclick="ocx.CloseSound(1);" style="color: blue;">Sound off</button>
+<button onclick="ocx.OpenSound(-1);" style="color: blue;">Sound on</button>
+
+
+<button onclick="ocx.StartTalk();" style="color: blue;">Mic On</button>
+<button onclick="ocx.StopTalk();" style="color: blue;">Mic Off</button>
+
+
+<button onclick="ocx.Fullscreen(true);" style="color: blue;">Fullscreen</button>
+<button onclick="ocx.ShowDeviceConfig();" style="color: blue;">Setup IpCam</button>
+<button onclick="ocx.ShowClientConfig();" style="color: blue;">Config IpCam</button>
+<button onclick="ocx.Logout();" style="color: blue;">Logout</button>
+
+<div id="mbb" style="width: 1095px; height: 881px;">
+    <div id="pla" style="width: 100%; height: 100%; float: left; padding: 0">
+        <div style="position: absolute; top: -1020px;"><a style="backGround:url(mb_bg.jpg)"></a></div>
+        <div style="position: absolute; top: -1000px;"><a style="background:url(yta11.jpg)"></a> <a
+                style="background: url(yt-1.gif)"></a><a style="background: url(yt+1.gif)"></a><a
+                style="background: url(11.jpg)"></a><a style="background: url(91.jpg)"></a><a
+                style="background: url(41.jpg)"></a><a style="background: url(stopRecordAll1.jpg)"></a> <a
+                style="background: url(m_img21.jpg)"></a><a style="background: url(m_img41.jpg)"> </a><a
+                style="background: url(audio.jpg)"></a><a style="background: url(yt11.jpg)"></a> <a
+                style="background: url(yt21.jpg)"></a><a style="background: url(yt31.jpg)"></a> <a
+                style="background: url(yt41.jpg)"></a><a style="background: url(yt51.jpg)"></a> <a
+                style="background: url(yt61.jpg)"></a><a style="background: url(yt71.jpg)"></a> <a
+                style="background: url(yt81.jpg)"></a><a style="background: url(yt91.jpg)"></a> <a
+                style="background: url(yt+1.png)"></a><a style="background: url(yt-1.png)"></a> <a
+                style="background: url(goPreSet1.jpg)"></a><a
+                style="background: url(addPreSet1.jpg)"> </a><a
+                style="background: url(editCruise1.jpg)"></a><a
+                style="background: url(delPreSet1.jpg)"> </a><a
+                style="background: url(goCruise1.jpg)"></a><a style="background: url(stopCruise1.jpg)"> </a><a
+                style="background: url(t1t.jpg)"></a><a style="background: url(yy11.jpg)"></a> <a
+                style="background: url(full1.jpg)"></a><a style="background: url(sar.png)"></a> <a
+                style="background: url(sar1.png)"></a><a style="background: url(sal.png)"></a> <a
+                style="background: url(sal1.png)"></a><a style="background: url(stopAll1.jpg)"></a> <a
+                style="background: url(startAll1.jpg)"></a><a style="background: url(snap1.jpg)"></a> <a
+                style="background: url(recordAll1.jpg)"></a><a
+                style="background: url(stopRecordAll.jpg)"></a><a style="background: url(361.jpg)"></a><a
+                style="background: url(251.jpg)"></a><a style="background: url(161.jpg)"></a></div>
+        <object id="ocx" type="application/nptest-plugin" height="100%" width="100%"></object>
+    </div>
+</div>
+
+<input class="inputyt" id="ps" value="5" maxlength="1" onkeyup="value=value.replace(/[^\d]/g,'')"
+       onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="text">
+</body>
+</html>
