@@ -184,6 +184,7 @@
 <div style="width: 1095px; height: 881px;">
     <object id="ocx" type="application/nptest-plugin" height="100%" width="100%"></object>
 </div>
-
+<input class="inputyt" id="ps" value="5" maxlength="1" onkeyup="value=value.replace(/[^\d]/g,'')"
+       onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="text">
 </body>
 </html>
