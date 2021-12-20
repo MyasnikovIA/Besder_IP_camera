@@ -54,16 +54,26 @@
     <script type="text/javascript">
         // config_connect_ip_cam.js - содержить информацию для подключения к IP камере
         var ipaddress = document.location.hostname;  // если камера установлена в локальной сети и страница запускается в ней
+        // var ipaddress = "192.168.1.40";  // если камера установлена в локальной сети и страница запускается в ней
         var hostport = 34567;                        // Порт IP камеры
         var serverIP = "xmeye.net";                  // сервер произвадителя IP камеры, через него транслируется видеопоток
         var serverPort = 8000;                       // порт сервера производителя
 
-        var runViewCam = function(){
+        var runViewCam = function(mac){
+              ocx.SetSpecialParamEx2(2, "Russian", 0, 0);  // выбор языка
+             // ocx.SetSpecialParamEx2(2, "English", 0, 0); // выбор языка
+             if (!DetectActiveX()) {
+                 return;
+             } else {
+                 if (0 < ocx.SetSpecialParamEx2(1, serverIP, serverPort, "")) { }
+                 // runViewCam();  // запуск просмотра при загрузке страницы
+             }
              // var res = ocx.Login(ipaddress, hostport, username, password);
              var res = ocx.Login(mac, hostport, username, password);
              if (res > 0) {
-                //ocx.SetSpecialParam(2);
+                // ocx.SetSpecialParam(2);
                 ocx.PlayAll();
+				// ocx.StartRealPlay(0,0,0);
              }else{
                 alert("error: "+res);
              }
@@ -80,16 +90,6 @@
             }
             return true;
         }
-        window.addEvent('domready', function () {
-            ocx.SetSpecialParamEx2(2, "Russian", 0, 0);  // выбор языка
-            // ocx.SetSpecialParamEx2(2, "English", 0, 0); // выбор языка
-            if (!DetectActiveX()) {
-                return;
-            } else {
-                if (0 < ocx.SetSpecialParamEx2(1, serverIP, serverPort, "")) { }
-                runViewCam();
-            }
-        });
 
         var Download = function() {
             window.open("New_Active.exe");
@@ -105,13 +105,11 @@
         margin-right: auto; margin-top: 350px;">
     <span id="errormessage" style="color: Black; font-size: 16px;"></span>
 </div>
-<br/><a href="https://xmeye.net/main">Products webpage Besder IP CAM (xmeye.net)</a>
-<br/><a href="https://ftp.mozilla.org/pub/firefox/releases/41.0/win32-EME-free/ru/Firefox%20Setup%2041.0.exe">Download
-    FireFox 41.0</a>
-<br/>
+<br/>|||<a href="https://xmeye.net/main">Products webpage Besder IP CAM (xmeye.net)</a>|||
+<a href="https://ftp.mozilla.org/pub/firefox/releases/41.0/win32-EME-free/ru/Firefox%20Setup%2041.0.exe">Download FireFox 41.0</a>|||
 <button id="dlbutton" onclick="Download();">Download New_Active.exe</button>
-
-<table style="text-align: center;">
+<br>
+<table style="text-align: center; position: fixed; top:100px;">
     <tr>
         <td>
             <button href="javascript:;"
@@ -181,22 +179,31 @@
         </td>
     </tr>
 </table>
+<center>
+    <select id="CameraMac">
+        <option value="be351e562c613921">Уличная камера на даче</option>
+        <option value="8a8cfcffa1f326ac">Камера в доме на даче</option>
+        <option value="22ca2dfce8ff26c3">Устройство 3 (домашняя камера)</option>
+    </select>
+    <button id="dlbutton2" onclick="runViewCam(  document.getElementById('CameraMac').value );">Запуск камеры</button>
+    <button id="dlbutton3" onclick="ocx.ShowPlayBack();">Запись</button>
+    <br/>
+    <button onclick="ocx.CloseSound(1);" style="color: blue;">Sound off</button>
+    <button onclick="ocx.OpenSound(-1);" style="color: blue;">Sound on</button>
 
-<button onclick="ocx.CloseSound(1);" style="color: blue;">Sound off</button>
-<button onclick="ocx.OpenSound(-1);" style="color: blue;">Sound on</button>
+    <button onclick="ocx.StartTalk();" style="color: blue;">Mic On</button>
+    <button onclick="ocx.StopTalk();" style="color: blue;">Mic Off</button>
 
-<button onclick="ocx.StartTalk();" style="color: blue;">Mic On</button>
-<button onclick="ocx.StopTalk();" style="color: blue;">Mic Off</button>
+    <button onclick="ocx.Fullscreen(true);" style="color: blue;">Fullscreen</button>
+    <button onclick="ocx.ShowDeviceConfig();" style="color: blue;">Setup IpCam</button>
+    <button onclick="ocx.ShowClientConfig();" style="color: blue;">Config IpCam</button>
+    <button onclick="ocx.Logout();" style="color: blue;">Logout</button>
+    <div style="width: 60%; height: 80%">
+        <object id="ocx" type="application/nptest-plugin" height="100%" width="100%"></object>
+    </div>
+</center>
 
-<button onclick="ocx.Fullscreen(true);" style="color: blue;">Fullscreen</button>
-<button onclick="ocx.ShowDeviceConfig();" style="color: blue;">Setup IpCam</button>
-<button onclick="ocx.ShowClientConfig();" style="color: blue;">Config IpCam</button>
-<button onclick="ocx.Logout();" style="color: blue;">Logout</button>
-
-<div style="width: 1095px; height: 881px;">
-    <object id="ocx" type="application/nptest-plugin" height="100%" width="100%"></object>
-</div>
-<input class="inputyt" id="ps" value="5" maxlength="1" onkeyup="value=value.replace(/[^\d]/g,'')"
+<input class="inputyt" id="ps" value="5" maxlength="3" onkeyup="value=value.replace(/[^\d]/g,'')"
        onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="text">
 </body>
 </html>
